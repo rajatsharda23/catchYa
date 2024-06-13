@@ -27,7 +27,6 @@ def process_images_and_display_descriptions(images):
         return
     
     st.title("Image Descriptions")
-    st.write("This model has a rate limit of 15 req per min, so after 15 images, it will wait for a min, and then continue :)")
     
     loading_text = st.empty()
     with st.spinner("Loading..."):
@@ -40,11 +39,12 @@ def process_images_and_display_descriptions(images):
                 response.resolve()
                 description = response.text.strip()
             except Exception as e:
-                description = f"Failed to generate description: {str(e)}"
+                st.error(f"Error generating description for {uploaded_file.name}: {str(e)}")
+                description = f"Failed to generate description"
 
             descriptions.append((uploaded_file.name, description))
 
-            st.image(img, caption=f"{description}", use_column_width=True)
+            st.image(img, caption=f"{uploaded_file.name}: {description}", use_column_width=True)
             st.markdown("---")
 
             if idx % 15 == 0:
